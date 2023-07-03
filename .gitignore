@@ -10,7 +10,7 @@
 *.DS_Store
 ._*
 .DS_Store
-.mvn
+
 hs_err_pid*
 out/
 target/
