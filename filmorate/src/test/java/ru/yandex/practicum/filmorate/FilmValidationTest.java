@@ -88,7 +88,7 @@ public class FilmValidationTest {
                         controller.createFilm(newFilm);
                     }
                 });
-        assertEquals("Максимальная длина описания фильма - 200" , exception.getMessage());
+        assertEquals("Максимальная длина описания фильма - 200", exception.getMessage());
     }
 
     @Test
