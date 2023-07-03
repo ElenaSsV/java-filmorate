@@ -1,18 +1,9 @@
-*.class
-*.log
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
-*.DS_Store
-._*
-.DS_Store
-hs_err_pid*
-out/
+
+HELP.md
 target/
+.mvn
+mvnw
+mvnw.cmd
 ##!.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -44,6 +35,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-*.db
-db/*
