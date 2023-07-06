@@ -8,6 +8,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 @Slf4j
 @RestController
 @RequestMapping("/films")
-public class FilmController extends Controller <Film> {
+public class FilmController extends Controller<Film> {
 
 }
