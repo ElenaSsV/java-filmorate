@@ -30,7 +30,7 @@ public class ControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ValidationErrorResponse onMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        final List<InputError> inputErrors= e.getBindingResult().getFieldErrors().stream()
+        final List<InputError> inputErrors = e.getBindingResult().getFieldErrors().stream()
                 .map(error -> new InputError(error.getField(), error.getDefaultMessage()))
                 .collect(Collectors.toList());
         log.info("Input validation error: {}", inputErrors);
