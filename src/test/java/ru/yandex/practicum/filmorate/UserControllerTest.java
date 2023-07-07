@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -32,9 +31,8 @@ public class UserControllerTest {
         assertThat(userController).isNotNull();
     }
 
-    @SneakyThrows
     @Test
-    void validateWhenAllDataCorrect() {
+    void validateWhenAllDataCorrect() throws Exception {
         User user = User.builder()
                 .login("testLogin")
                 .name("Test Name")
@@ -52,9 +50,8 @@ public class UserControllerTest {
                 assertEquals(200, h.getResponse().getStatus()));
     }
 
-    @SneakyThrows
     @Test
-    void validateWhenEmailIsInvalid() {
+    void validateWhenEmailIsInvalid() throws Exception {
         String inValidUser = objectMapper.writeValueAsString(User.builder()
                 .login("testLogin")
                 .name("Test Name")
@@ -70,9 +67,8 @@ public class UserControllerTest {
         );
     }
 
-    @SneakyThrows
     @Test
-    void validateWhenEmailIfBirthdayInFuture() {
+    void validateWhenEmailIfBirthdayInFuture() throws Exception {
         String inValidUser = objectMapper.writeValueAsString(User.builder()
                 .login("testLogin")
                 .name("Test Name")
@@ -88,9 +84,8 @@ public class UserControllerTest {
         );
     }
 
-    @SneakyThrows
     @Test
-    void shouldCreateUserIfNameIsEmpty() {
+    void shouldCreateUserIfNameIsEmpty() throws Exception {
         String inValidUser = objectMapper.writeValueAsString(User.builder()
                 .login("testLogin")
                 .name("")

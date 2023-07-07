@@ -32,9 +32,8 @@ public class FilmControllerTest {
         assertThat(filmController).isNotNull();
     }
 
-    @SneakyThrows
     @Test
-    void validateIfAllDataCorrect() {
+    void validateIfAllDataCorrect() throws Exception {
         Film film = Film.builder()
                 .name("nisi eiusmod")
                 .description("adipisicing")
@@ -51,9 +50,8 @@ public class FilmControllerTest {
                 assertEquals(200, h.getResponse().getStatus()));
     }
 
-    @SneakyThrows
     @Test
-    void validateIfDurationNegative() {
+    void validateIfDurationNegative() throws Exception {
         String inValidFilm =
                 objectMapper.writeValueAsString(Film.builder()
                         .name("nisi eiusmod")
@@ -71,9 +69,8 @@ public class FilmControllerTest {
                 );
     }
 
-    @SneakyThrows
     @Test
-    void validateIfNoName() {
+    void validateIfNoName() throws Exception {
         String inValidFilm =
                 objectMapper.writeValueAsString(Film.builder()
                         .name("")
@@ -91,9 +88,8 @@ public class FilmControllerTest {
                 );
     }
 
-    @SneakyThrows
     @Test
-    void validateIfReleaseDateEarlierThan28Dec1895() {
+    void validateIfReleaseDateEarlierThan28Dec1895() throws Exception {
         String inValidFilm =
                 objectMapper.writeValueAsString(Film.builder()
                         .name("nisi eiusmod")
