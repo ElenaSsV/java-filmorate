@@ -1,12 +1,9 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.Getter;
-import lombok.Setter;
+public interface Entity {
 
-@Getter
-@Setter
-public class Entity {
+    long getId();
 
-    private long id;
+    public void setId(long id);
 
 }

@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -9,8 +10,9 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-public class User extends Entity {
+public class User implements Entity {
 
+    private long id;
     @Email
     private String email;
     @NotBlank

@@ -11,8 +11,9 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-public class Film extends Entity {
+public class Film implements Entity {
 
+    private long id;
     @NotBlank(message = "Название фильма не может быть пустым")
     private String name;
     @Length(max = 200, message = "Максимальная длина описания фильма не должна превышать 200 символов")
