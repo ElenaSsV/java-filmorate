@@ -12,19 +12,11 @@ public class UserController extends Controller<User> {
 
     private long id = 1L;
 
-    public long validateData(User user) {
-        user.setId(id++);
-        log.info("User id is set to: {}", user.getId());
+    public void validateData(User user) {
         if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
             log.info("No user name is received");
             user.setName(user.getLogin());
             log.info("User name is set to: {}", user.getLogin());
         }
-        return user.getId();
     }
-
-    public long getId(User user) {
-        return user.getId();
-    }
-
 }

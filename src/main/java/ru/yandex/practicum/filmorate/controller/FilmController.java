@@ -9,16 +9,8 @@ import ru.yandex.practicum.filmorate.model.Film;
 @RestController
 @RequestMapping("/films")
 public class FilmController extends Controller<Film> {
-    private long id = 1L;
+    public void validateData(Film film) {
 
-    public long validateData(Film film) {
-        film.setId(id++);
-        log.info("Film id is set to: {}", film.getId());
-        return film.getId();
-    }
-
-    public long getId(Film film) {
-        return film.getId();
     }
 
 }
