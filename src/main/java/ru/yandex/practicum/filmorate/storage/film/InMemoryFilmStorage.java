@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 public class InMemoryFilmStorage extends AbstractStorage<Film> implements FilmStorage {
 
     private final UserStorage userStorage;
+
     @Autowired
     public InMemoryFilmStorage(UserStorage userStorage) {
         this.userStorage = userStorage;
