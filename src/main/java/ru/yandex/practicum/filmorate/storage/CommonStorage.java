@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface CommonStorage<T> {
 
-    T create (T data);
+    T create(T data);
 
     T update(T data);
 
