@@ -41,7 +41,7 @@ public class InMemoryUserStorage extends AbstractStorage<User> implements UserSt
     public List<User> getFriends(long id) {
         checkUserId(id);
         return storage.get(id).getFriends().stream()
-                .map(storage ::get)
+                .map(storage::get)
                 .collect(Collectors.toList());
     }
 
