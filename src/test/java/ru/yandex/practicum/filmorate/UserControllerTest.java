@@ -61,9 +61,7 @@ public class UserControllerTest {
         mockMvc.perform(post("/users")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(inValidUser)))
-                .andDo(h -> {assertEquals(400, h.getResponse().getStatus());
-                }
-        );
+                .andDo(h -> assertEquals(400, h.getResponse().getStatus()));
     }
 
     @Test
@@ -74,9 +72,7 @@ public class UserControllerTest {
         mockMvc.perform(post("/users")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(inValidUser)))
-                .andDo(h -> {assertEquals(400, h.getResponse().getStatus());
-                }
-        );
+                .andDo(h -> assertEquals(400, h.getResponse().getStatus()));
     }
 
     @Test
@@ -87,9 +83,7 @@ public class UserControllerTest {
         mockMvc.perform(post("/users")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(user)))
-                .andDo(h -> {assertEquals(200, h.getResponse().getStatus());
-                }
-        );
+                .andDo(h -> assertEquals(200, h.getResponse().getStatus()));
     }
 
     @Test

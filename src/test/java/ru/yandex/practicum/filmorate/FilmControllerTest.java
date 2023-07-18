@@ -65,9 +65,7 @@ public class FilmControllerTest {
         mockMvc.perform(post("/films")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(inValidFilm)))
-                        .andDo(h -> {assertEquals(400, h.getResponse().getStatus());
-                        }
-                );
+                        .andDo(h -> assertEquals(400, h.getResponse().getStatus()));
     }
 
     @Test
@@ -77,9 +75,7 @@ public class FilmControllerTest {
         mockMvc.perform(post("/films")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(inValidFilm)))
-                        .andDo(h -> {assertEquals(400, h.getResponse().getStatus());
-                        }
-                );
+                        .andDo(h -> assertEquals(400, h.getResponse().getStatus()));
     }
 
     @Test
@@ -90,9 +86,7 @@ public class FilmControllerTest {
         mockMvc.perform(post("/films")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(inValidFilm)))
-                        .andDo(h -> {assertEquals(400, h.getResponse().getStatus());
-                        }
-                );
+                        .andDo(h -> assertEquals(400, h.getResponse().getStatus()));
     }
 
     @Test
@@ -100,9 +94,7 @@ public class FilmControllerTest {
         mockMvc.perform(post("/films")
                         .contentType("application/json")
                         .content(""))
-                        .andDo(h -> {assertEquals(500, h.getResponse().getStatus());
-                        }
-                );
+                        .andDo(h -> assertEquals(500, h.getResponse().getStatus()));
     }
 
     @Test
