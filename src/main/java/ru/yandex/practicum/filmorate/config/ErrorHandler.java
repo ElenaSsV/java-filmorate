@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controller;
+package ru.yandex.practicum.filmorate.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,9 +18,6 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ErrorResponse onMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-//        final List<String> inputErrors = e.getBindingResult().getFieldErrors().stream()
-//                .map(error -> new InputError(error.getField(), error.getDefaultMessage()))
-//                .collect(Collectors.toList());
         log.info("Input validation error: {}", e.getMessage());
         return new ErrorResponse("Передан некорректный параметр: " + e.getMessage());
     }
