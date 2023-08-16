@@ -14,6 +14,7 @@ mvnw.cmd
 ##!.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+/resources/data.sql
 
 ### STS ###
 .apt_generated
