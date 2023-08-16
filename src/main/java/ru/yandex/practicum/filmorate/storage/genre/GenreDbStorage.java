@@ -28,7 +28,6 @@ public class GenreDbStorage implements GenreStorage {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-
     @Override
     public Genre create(Genre genre) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("users")
@@ -73,7 +72,7 @@ public class GenreDbStorage implements GenreStorage {
     }
 
     private Genre makeGenre(ResultSet rs, int rowNum) throws SQLException {
-        return new Genre(rs.getLong("id"), rs.getString("name") );
+        return new Genre(rs.getLong("id"), rs.getString("name"));
     }
 
     public void checkGenreId(long genreId) {
