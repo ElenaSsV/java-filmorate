@@ -14,12 +14,11 @@ import java.util.List;
 public class FilmService extends AbstractService<Film, FilmStorage> {
 
     @Autowired
-    public FilmService(FilmStorage filmStorage) {
+    public FilmService (FilmStorage filmStorage) {
         super(filmStorage);
     }
 
     public void like(long filmId, long userId) {
-
         storage.like(filmId, userId);
     }
 
