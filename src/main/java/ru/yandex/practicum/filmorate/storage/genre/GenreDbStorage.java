@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.storage.genre;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-@Qualifier("GenreDbStorage")
+@Primary
 @Slf4j
 public class GenreDbStorage implements GenreStorage {
 
@@ -41,8 +41,8 @@ public class GenreDbStorage implements GenreStorage {
     @Override
     public Genre update(Genre genre) {
         String sqlQuery = "UPDATE genres SET name = ? WHERE id = ?";
-        boolean isUpdated = jdbcTemplate.update(sqlQuery, genre.getName()) > 0;
-        if (!isUpdated) {
+        if (jdbcTemplate.update(sqlQuery, genre.getName()) < 1) {
+            log.info("Genre with id {} not found", genre.getId());
             throw new NotFoundException("Жанр c id " + genre.getId() + " не найден");
         }
         return genre;
@@ -50,19 +50,20 @@ public class GenreDbStorage implements GenreStorage {
 
     public List<Genre> getAll() {
         String sql = "SELECT id, name FROM genres";
-        List<Genre> genres = jdbcTemplate.query(sql, this::makeGenre);
-        if (genres.isEmpty()) {
-            return new ArrayList<>();
-        } else {
-            return genres;
-        }
+        return new ArrayList<>(jdbcTemplate.query(sql, this::makeGenre));
     }
 
     @Override
     public Genre getById(long id) {
-        checkGenreId(id);
         String sql = "SELECT id, name FROM genres WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, this::makeGenre, id);
+        Genre genre;
+        try {
+            genre = jdbcTemplate.queryForObject(sql, this::makeGenre, id);
+        } catch (Exception e) {
+            log.info("Genre with id {} not found", id);
+            throw new NotFoundException("Жанр c id " + id + " не найден");
+        }
+        return genre;
     }
 
     private Map<String, Object> toMap(Genre genre) {
@@ -73,15 +74,5 @@ public class GenreDbStorage implements GenreStorage {
 
     private Genre makeGenre(ResultSet rs, int rowNum) throws SQLException {
         return new Genre(rs.getLong("id"), rs.getString("name"));
-    }
-
-    public void checkGenreId(long genreId) {
-        String sql = "SELECT * FROM genres WHERE id = ?";
-        List<Genre> genre = jdbcTemplate.query(sql, this::makeGenre, genreId);
-
-        if (genre.isEmpty()) {
-            log.info("Genre with id {} not found", genreId);
-            throw new NotFoundException("Жанр с id " + genreId + " не найден");
-        }
     }
 }

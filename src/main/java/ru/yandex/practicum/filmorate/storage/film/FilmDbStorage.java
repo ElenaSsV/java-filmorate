@@ -50,12 +50,14 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film update(Film film) {
-        checkFilmId(film.getId());
         String sqlQuery = "UPDATE films SET name = ?, description = ?, release_date = ?, duration = ?, " +
                 "rating_id = ? WHERE id = ?";
         log.info("Updating film {}", film);
-        jdbcTemplate.update(sqlQuery, film.getName(), film.getDescription(), film.getReleaseDate(),
-                film.getDuration(), film.getMpa().getId(), film.getId());
+        if (jdbcTemplate.update(sqlQuery, film.getName(), film.getDescription(), film.getReleaseDate(),
+                film.getDuration(), film.getMpa().getId(), film.getId()) < 1) {
+            log.info("Film with id {} not found", film.getId());
+            throw new NotFoundException("Фильм с id " + film.getId() + " не найден.");
+        }
         updateGenres(film);
         updateLikes(film);
 
@@ -71,16 +73,20 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film getById(long id) {
-        checkFilmId(id);
         String sql = "SELECT f.id, f.name, f.description, f.release_date, f.duration, f.rating_id, r.name " +
                 "AS rating_name FROM films AS f JOIN ratings AS r ON f.RATING_ID = r.ID WHERE f.id = ?";
-        log.info("Received filmId {}", id);
-        return jdbcTemplate.queryForObject(sql, this::makeFilm, id);
+        Film film;
+        try {
+            film = jdbcTemplate.queryForObject(sql, this::makeFilm, id);
+        } catch (Exception e) {
+            log.info("Film with id {} not found", id);
+            throw new NotFoundException("Фильм с id " + id + " не найден.");
+        }
+        return film;
     }
 
     @Override
     public void like(long filmId, long userId) {
-        checkFilmId(filmId);
         checkUserId(userId);
         String sql = "INSERT INTO likes (film_id, user_id) VALUES(?, ?)";
         log.info("Adding like to film {} from user {}", filmId, userId);
@@ -90,11 +96,13 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void deleteLike(long filmId, long userId) {
-        checkFilmId(filmId);
         checkUserId(userId);
         String sql = "DELETE FROM likes WHERE film_id = ? AND user_id = ?";
         log.info("Deleting like from film {} from user {}", filmId, userId);
-        jdbcTemplate.update(sql, filmId, userId);
+        if (jdbcTemplate.update(sql, filmId, userId) < 1) {
+            log.info("Film with id {} not found", filmId);
+            throw new NotFoundException("Фильм с id " + filmId + " не найден.");
+        }
     }
 
     @Override
@@ -175,17 +183,6 @@ public class FilmDbStorage implements FilmStorage {
         User user = userStorage.getById(userId);
         if (user == null) {
             throw new NotFoundException("Пользователь id " + userId + " не найден");
-        }
-    }
-
-    private void checkFilmId(long filmId) {
-        String sql = "SELECT f.id, f.name, f.description, f.release_date, f.duration, f.rating_id, r.name " +
-                "AS rating_name FROM films AS f JOIN ratings AS r ON f.RATING_ID = r.ID WHERE f.id = ?";
-        List<Film> film = jdbcTemplate.query(sql, this::makeFilm, filmId);
-
-        if (film.isEmpty()) {
-            log.info("Film with id {} not found", filmId);
-            throw new NotFoundException("Фильм с id " + filmId + " не найден");
         }
     }
 }

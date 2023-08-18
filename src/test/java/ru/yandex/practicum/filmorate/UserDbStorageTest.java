@@ -114,6 +114,19 @@ public class UserDbStorageTest {
     }
 
     @Test
+    public void shouldThrowExceptionIfAddedFriendWithIncorrectId() {
+        User user = userStorage.create(getTestUser());
+        final NotFoundException exception = assertThrows(
+                NotFoundException.class,
+                new Executable() {
+                    @Override
+                    public void execute() throws Throwable {
+                        userStorage.addAsFriend(user.getId(), -2);
+                    }
+                });
+    }
+
+    @Test
     public void testDeleteFriend() {
        User user = getTestUser();
        User user2 = getTesUser2();

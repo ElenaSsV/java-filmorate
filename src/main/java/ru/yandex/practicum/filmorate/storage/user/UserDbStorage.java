@@ -38,56 +38,58 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User update(User user) {
-        checkUserId(user.getId());
         String sqlQuery = "update users set email = ?, login = ?, name = ?, birthday = ? where id = ?";
-        jdbcTemplate.update(sqlQuery, user.getEmail(), user.getLogin(), user.getName(),
-                user.getBirthday(), user.getId());
+        if (jdbcTemplate.update(sqlQuery, user.getEmail(), user.getLogin(), user.getName(),
+                user.getBirthday(), user.getId()) < 1) {
+            throw new NotFoundException("Пользователь с id " + user.getId() + " не найден.");
+        }
         return user;
     }
 
     @Override
     public List<User> getAll() {
-        String sql = "select * from users";
-        List<User> users = jdbcTemplate.query(sql, this::makeUser);
-        if (users.isEmpty()) {
-            return new ArrayList<>();
-        } else {
-            return users;
-        }
+        String sql = "SELECT * FROM users";
+        return new ArrayList<>(jdbcTemplate.query(sql, this::makeUser));
     }
 
     @Override
     public User getById(long id) {
-        checkUserId(id);
-        String sql = "SELECT * FROM users where id = ?";
-        return jdbcTemplate.queryForObject(sql, this::makeUser, id);
+        String sql = "SELECT * FROM users WHERE id = ?";
+        User user;
+        try {
+            user = jdbcTemplate.queryForObject(sql, this::makeUser, id);
+        } catch (Exception e) {
+            log.info("User with id {} not found", id);
+            throw new NotFoundException("Пользователь с id " + id + " не найден.");
+        }
+        return user;
     }
 
     @Override
     public void addAsFriend(long userId, long friendId) {
-        checkUserId(userId);
-        checkUserId(friendId);
         String sqlUpdate = "UPDATE friendships SET is_confirmed = true WHERE user_id = ? AND friend_id = ?";
         String sqlInsert = "INSERT INTO friendships(user_id, friend_id, is_confirmed) VALUES (?, ?, ?)";
-        boolean isFriendShipPresent = jdbcTemplate.update(sqlUpdate, friendId, userId) > 0;
-        if (isFriendShipPresent) {
-            jdbcTemplate.update(sqlInsert, userId, friendId, true);
-        } else {
-            jdbcTemplate.update(sqlInsert, userId, friendId, false);
+        try {
+            boolean isFriendShipPresent = jdbcTemplate.update(sqlUpdate, friendId, userId) > 0;
+            if (isFriendShipPresent) {
+                jdbcTemplate.update(sqlInsert, userId, friendId, true);
+            } else {
+                jdbcTemplate.update(sqlInsert, userId, friendId, false);
+            }
+        } catch (Exception e) {
+            log.info("User not found");
+            throw new NotFoundException("Пользователь не найден.");
         }
     }
 
     @Override
     public void deleteFromFriends(long userId, long friendId) {
-        checkUserId(userId);
-        checkUserId(friendId);
-        String sql = "DELETE FROM friendships WHERE user_id = ? AND friend_id = ?";
-        boolean isDeleted = jdbcTemplate.update(sql, userId, friendId) > 0;
-        if (!isDeleted) {
-            throw new NotFoundException("Пользователь с id + " + userId + " не найден.");
+        String sqlDel = "DELETE FROM friendships WHERE user_id = ? AND friend_id = ?";
+        String sqlUpdateStatus = "UPDATE friendships SET is_confirmed = false WHERE user_id = ? AND friend_id = ?";
+        if (jdbcTemplate.update(sqlDel, userId, friendId) < 1) {
+            throw new NotFoundException("Пользователь не найден.");
         } else {
-            String sqlUpdate = "UPDATE friendships SET is_confirmed = false WHERE user_id = ? AND friend_id = ?";
-            jdbcTemplate.update(sqlUpdate, friendId, userId);
+            jdbcTemplate.update(sqlUpdateStatus, friendId, userId);
         }
     }
 
@@ -103,14 +105,14 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getFriends(long id) {
-        checkUserId(id);
         String sql = "SELECT * FROM users WHERE id IN (SELECT friend_id FROM friendships WHERE user_id = ?)";
-        List<User> friends = jdbcTemplate.query(sql, this::makeUser, id);
-        if (friends.isEmpty()) {
-            return new ArrayList<>();
-        } else {
-            return friends;
+        List<User> friends = new ArrayList<>();
+        try {
+            friends = jdbcTemplate.query(sql, this::makeUser, id);
+        } catch (Exception e) {
+            throw new NotFoundException("Пользователь не найден.");
         }
+      return friends;
     }
 
     private User makeUser(ResultSet rs, int rowNum) throws SQLException {
@@ -140,21 +142,7 @@ public class UserDbStorage implements UserStorage {
 
     private Set<Long> loadFriendsIds(long userId) {
         String sql = "SELECT friend_id FROM friendships WHERE user_id = ?";
-        List<Long> friends = jdbcTemplate.queryForList(sql, Long.class, userId);
-        if (friends.isEmpty())
-            return new HashSet<>();
-        else {
-            return new HashSet<>(friends);
-        }
+        return new HashSet<>(jdbcTemplate.queryForList(sql, Long.class, userId));
     }
 
-    public void checkUserId(long userId) {
-        String sql = "SELECT * FROM users WHERE id = ?";
-        List<User> user = jdbcTemplate.query(sql, this::makeUser, userId);
-
-        if (user.isEmpty()) {
-            log.info("User with id {} not found", userId);
-            throw new NotFoundException("Пользователь id " + userId + " не найден");
-        }
-    }
 }

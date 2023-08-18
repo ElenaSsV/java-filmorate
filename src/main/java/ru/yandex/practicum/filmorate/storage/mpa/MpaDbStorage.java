@@ -41,8 +41,8 @@ public class MpaDbStorage implements MpaStorage {
     @Override
     public Mpa update(Mpa rating) {
         String sqlQuery = "UPDATE ratings SET name = ? WHERE id = ?";
-        boolean isUpdated = jdbcTemplate.update(sqlQuery, rating.getName()) > 0;
-        if (!isUpdated) {
+        if (jdbcTemplate.update(sqlQuery, rating.getName()) < 1) {
+            log.info("Mpa with id {} not found", rating.getId());
             throw new NotFoundException("Жанр c id " + rating.getId() + " не найден");
         }
         return rating;
@@ -51,19 +51,20 @@ public class MpaDbStorage implements MpaStorage {
     @Override
     public List<Mpa> getAll() {
         String sql = "SELECT * FROM ratings";
-        List<Mpa> ratings = jdbcTemplate.query(sql, this::makeRating);
-        if (ratings.isEmpty()) {
-            return new ArrayList<>();
-        } else {
-            return ratings;
-        }
+        return new ArrayList<>(jdbcTemplate.query(sql, this::makeRating));
     }
 
     @Override
     public Mpa getById(long id) {
-        checkMpaId(id);
         String sql = "SELECT id, name FROM ratings WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, this::makeRating, id);
+        Mpa mpa;
+        try {
+            mpa = jdbcTemplate.queryForObject(sql, this::makeRating, id);
+        } catch (Exception e) {
+            log.info("Mpa with id {} not found", id);
+            throw new NotFoundException("Жанр c id " + id + " не найден");
+        }
+        return mpa;
     }
 
     private Map<String, Object> toMap(Mpa rating) {
@@ -74,15 +75,5 @@ public class MpaDbStorage implements MpaStorage {
 
     private Mpa makeRating(ResultSet rs, int rowNum) throws SQLException {
         return new Mpa(rs.getLong("id"), rs.getString("name"));
-    }
-
-    public void checkMpaId(long mpaId) {
-        String sql = "SELECT * FROM ratings WHERE id = ?";
-        List<Mpa> mpa = jdbcTemplate.query(sql, this::makeRating, mpaId);
-
-        if (mpa.isEmpty()) {
-            log.info("Rating with id {} not found", mpaId);
-            throw new NotFoundException("Рейтинг с id " + mpaId + " не найден");
-        }
     }
 }

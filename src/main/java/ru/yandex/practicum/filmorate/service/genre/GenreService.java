@@ -13,7 +13,7 @@ import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
 public class GenreService extends AbstractService<Genre, GenreStorage> {
 
     @Autowired
-    public GenreService(@Qualifier("GenreDbStorage") GenreStorage storage) {
+    public GenreService(GenreStorage storage) {
         super(storage);
     }
 
