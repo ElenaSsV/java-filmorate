@@ -9,10 +9,10 @@ import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
 
 @Slf4j
 @Service
-public class Mpa extends AbstractService<ru.yandex.practicum.filmorate.model.Mpa, MpaStorage> {
+public class MpaService extends AbstractService<ru.yandex.practicum.filmorate.model.Mpa, MpaStorage> {
 
     @Autowired
-    public Mpa(@Qualifier("MpaDbStorage") MpaStorage storage) {
+    public MpaService(@Qualifier("MpaDbStorage") MpaStorage storage) {
         super(storage);
     }
 }
