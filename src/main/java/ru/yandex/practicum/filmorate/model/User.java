@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -11,7 +10,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@Builder
 public class User implements Entity {
 
     private long id;

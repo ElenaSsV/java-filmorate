@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.filmorate.model.Entity;
 import ru.yandex.practicum.filmorate.storage.CommonStorage;
 
@@ -10,7 +9,7 @@ public abstract class AbstractService<T extends Entity, E extends CommonStorage<
 
     protected final E storage;
 
-    @Autowired
+    //@Autowired
     public AbstractService(E storage) {
         this.storage = storage;
     }

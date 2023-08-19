@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -11,7 +10,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@Builder
 public class Film implements Entity {
 
     private long id;
@@ -24,6 +22,8 @@ public class Film implements Entity {
     @Positive(message = "Продолжительность фильма должна быть положительной")
     private long duration;
     private final Set<Long> likes = new HashSet<>();
+    private Set<Genre> genres;
+    private Mpa mpa;
 
     public int getLikesQty() {
         return likes.size();
